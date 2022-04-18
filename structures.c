@@ -3,13 +3,6 @@
 #include <string.h>
 #include "structures.h"
 
-typedef struct System{
-    int start_time;
-    int main_memory;
-    int serial_devices;
-    int quantum;
-}System;
-
 System * createSystem(char str[]){
     System *sys = malloc(sizeof(System));
     char *token=strtok(str," ");
@@ -22,15 +15,6 @@ System * createSystem(char str[]){
     sys->quantum = atoi(token+2);
     return sys;
 }
-
-typedef struct Job{
-    int arrival;
-    int job_num;
-    int needed_memory;
-    int num_devices;
-    int run_time;
-    int priority;
-}Job;
 
 Job * createJob(char str[]){
     Job *job = malloc(sizeof(Job));
@@ -49,12 +33,6 @@ Job * createJob(char str[]){
     return job;
 }
 
-typedef struct Request{
-    int arrival;
-    int job_num;
-    int num_devices;
-}Request;
-
 Request * createRequest(char str[]){
     Request *req = malloc(sizeof(Request));
     char *token=strtok(str," ");
@@ -66,12 +44,6 @@ Request * createRequest(char str[]){
     return req;
 }
 
-typedef struct Release{
-    int release_time;
-    int job_num;
-    int num_devices;
-}Release;
-
 Release * createRelease(char str[]){
     Release *release = malloc(sizeof(Release));
     char *token=strtok(str," ");
@@ -80,5 +52,5 @@ Release * createRelease(char str[]){
     release->job_num=atoi(token+2);
     token=strtok(NULL," ");
     release->num_devices=atoi(token+2);
-    return req;
+    return release;
 }
