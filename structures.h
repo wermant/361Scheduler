@@ -1,6 +1,3 @@
-#ifndef GREET_H_
-#define GREET_H_
-
 typedef struct System{
     int start_time;
     int main_memory;
@@ -36,5 +33,3 @@ typedef struct Release{
 }Release;
 
 Release * createRelease(char str[]);
-
-#endif
