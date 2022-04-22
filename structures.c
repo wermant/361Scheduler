@@ -16,6 +16,10 @@ System * createSystem(char str[]){
     return sys;
 }
 
+void destroySystem(System *sys){
+    free(sys);
+}
+
 Job * createJob(char str[]){
     Job *job = malloc(sizeof(Job));
     char *token=strtok(str," ");
@@ -33,6 +37,10 @@ Job * createJob(char str[]){
     return job;
 }
 
+void destroyJob(Job *job){
+    free(job);
+}
+
 Request * createRequest(char str[]){
     Request *req = malloc(sizeof(Request));
     char *token=strtok(str," ");
@@ -44,6 +52,10 @@ Request * createRequest(char str[]){
     return req;
 }
 
+void destroyRequest(Request *req){
+    free(req);
+}
+
 Release * createRelease(char str[]){
     Release *release = malloc(sizeof(Release));
     char *token=strtok(str," ");
@@ -53,4 +65,8 @@ Release * createRelease(char str[]){
     token=strtok(NULL," ");
     release->num_devices=atoi(token+2);
     return release;
+}
+
+void destroyRelease(Release *rel){
+    free(rel);
 }

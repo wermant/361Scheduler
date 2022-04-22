@@ -6,6 +6,7 @@ typedef struct System{
 }System;
 
 System * createSystem(char str[]);
+void destroySystem(System *);
 
 typedef struct Job{
     int arrival;
@@ -17,6 +18,7 @@ typedef struct Job{
 }Job;
 
 Job * createJob(char str[]);
+void *destroyJob(Job *);
 
 typedef struct Request{
     int arrival;
@@ -25,6 +27,7 @@ typedef struct Request{
 }Request;
 
 Request * createRequest(char str[]);
+void destroyRequest(Request *);
 
 typedef struct Release{
     int release_time;
@@ -33,3 +36,4 @@ typedef struct Release{
 }Release;
 
 Release * createRelease(char str[]);
+void destroyRelease(Release *);
