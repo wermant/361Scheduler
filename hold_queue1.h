@@ -1,10 +1,9 @@
-#include "structures.h"
 typedef struct Node{
     Job *job;
-    Node *next;
-    Node *prev;
+    struct Node *next;
+    struct Node *prev;
 }Node;
 
-void push(Node *,Job *);
+Node *push(Node *,Job *);
 Node *pop(Node *);
 

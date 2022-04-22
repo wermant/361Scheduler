@@ -18,7 +18,7 @@ typedef struct Job{
 }Job;
 
 Job * createJob(char str[]);
-void *destroyJob(Job *);
+void destroyJob(Job *);
 
 typedef struct Request{
     int arrival;

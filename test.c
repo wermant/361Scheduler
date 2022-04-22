@@ -2,9 +2,25 @@
 #include <stdlib.h>
 #include <string.h>
 #include "structures.h"
+#include "hold_queue1.h"
 
-void main(){
-    char str[]="5 M=60 S=10 Q=5";
-    System *test=createSystem(str);
-    printf("%d\n%d\n%d\n%d\n",test->start_time,test->main_memory,test->serial_devices,test->quantum);    
+Node *h1head=NULL;
+
+void main(){   
+    FILE *fp;
+    char *line=NULL;
+    size_t len=0;
+    ssize_t read;
+
+    fp = fopen("test.txt", "r");
+    while (getline(&line,&len,fp)!=-1){
+        Job *j=createJob(line);
+        h1head=push(h1head,j);
+    }
+    Node *temp=h1head;
+    while (temp!=NULL){
+        printf("%d\n",temp->job->run_time);
+        temp=temp->next;
+    }
+    fclose(fp);
 }
