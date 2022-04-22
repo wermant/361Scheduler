@@ -3,7 +3,7 @@
 #include "structures.h"
 #include "hold_queue1.h"
 
-Node *push(Node *head,Job *new_job){
+Node *hq1_push(Node *head,Job *new_job){
     if (head==NULL){
         head=malloc(sizeof(Node));
         head->job=new_job;
@@ -47,7 +47,7 @@ Node *push(Node *head,Job *new_job){
     }
 }
 
-Node *pop(Node *head){
+Node *hq1_pop(Node *head){
     Node *ret = head;
     head=head->next;
     head->prev=NULL;

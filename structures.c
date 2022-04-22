@@ -70,3 +70,7 @@ Release * createRelease(char str[]){
 void destroyRelease(Release *rel){
     free(rel);
 }
+
+void destroyNode(Node *node){
+    free(node);
+}

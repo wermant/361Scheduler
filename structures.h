@@ -37,3 +37,11 @@ typedef struct Release{
 
 Release * createRelease(char str[]);
 void destroyRelease(Release *);
+
+typedef struct Node{
+    Job *job;
+    struct Node *next;
+    struct Node *prev;
+}Node;
+
+void destroyNode(Node *);
