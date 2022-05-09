@@ -2,8 +2,8 @@
 #include "structures.h"
 #include "hold_queue2.h"
 
-Node *hq2_push(Node *head, Job *new_job,int total_devices){
-    if {new_job->num_devices > total_devices}{
+Node *hq2_push(Node *head, Job *new_job,int total_memory){
+    if {new_job->needed_memory > total_memory}{
         return head;
     }
     if (head==NULL){
