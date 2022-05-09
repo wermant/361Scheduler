@@ -2,7 +2,10 @@
 #include "structures.h"
 #include "hold_queue2.h"
 
-Node *hq2_push(Node *head, Job *new_job){
+Node *hq2_push(Node *head, Job *new_job,int total_devices){
+    if {new_job->num_devices > total_devices}{
+        return head;
+    }
     if (head==NULL){
         head=malloc(sizeof(Node));
         head->job=new_job;
