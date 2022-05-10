@@ -3,7 +3,7 @@
 #include "hold_queue2.h"
 
 Node *hq2_push(Node *head, Job *new_job,int total_memory,int total_devices){
-    if {new_job->needed_memory > total_memory || new_job->num_devices > total_devices}{
+    if (new_job->needed_memory > total_memory || new_job->num_devices > total_devices){
         return head;
     }
     if (head==NULL){

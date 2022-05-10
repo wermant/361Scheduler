@@ -4,7 +4,7 @@
 #include "hold_queue1.h"
 
 Node *hq1_push(Node *head,Job *new_job,int total_memory,int total_devices, int total_devices){
-    if {new_job->needed_memory > total_memory || new_job->num_devices > total_devices}{
+    if (new_job->needed_memory > total_memory || new_job->num_devices > total_devices){
         return head;
     }
     else if (head==NULL){
