@@ -21,12 +21,26 @@ void hq1_push(Node *head,Job *new_job,int total_memory,int total_devices){
         while (temp->job->run_time<=new_node->job->run_time&&temp->next!=NULL){
             temp=temp->next;
         }
-        if (temp==head && temp->job->run_time>new_node->job->run_time){
-            new_node->next=temp;
+        if (temp==head && temp->job->run_time>new_node->job->run_time&&temp->next==NULL){
+            Job *temp_job=head->job;
+            head->job=new_node->job;
+            new_node->job=temp_job;
+            head->next=new_node;
+            new_node->prev=head;
+            new_node->next=NULL;
+        }
+        else if (temp==head && temp->job->run_time>new_node->job->run_time&&temp->next!=NULL){
+            Job *temp_job=head->job;
+            head->job=new_node->job;
+            new_node->job=temp_job;
+            head->next->prev=new_node;
+            head->next=new_node;
+            new_node->prev=head;
+            /*new_node->next=temp;
             new_node->prev=NULL;
             temp->prev=new_node;
             temp->next=head->next;
-            head=new_node;
+            head=new_node;*/
         }
         else if(temp==head&&temp->job->run_time<=new_node->job->run_time&&temp->next==NULL){
             new_node->prev=temp;
@@ -48,9 +62,17 @@ void hq1_push(Node *head,Job *new_job,int total_memory,int total_devices){
 }
 
 Node *pop(Node *head){
-    Node *ret = head;
-    head=head->next;
-    head->prev=NULL;
-    ret->next=NULL;
-    return ret;
+    Node *ret=malloc(sizeof(Node));
+    if (head->next==NULL){
+        ret->job=head->job;
+        head->job=NULL;
+        return ret;
+    }
+    else{
+        Job *temp_job=head->job;
+        ret->job=head->job;
+        head->job=head->next->job;
+        head->next=head->next->next;
+        return ret; 
+    }
 }
