@@ -11,7 +11,6 @@ void hq1_push(Node *head,Job *new_job,int total_memory,int total_devices){
         head->job=new_job;
         head->next=NULL;
         head->prev=NULL;
-        printf("Here\n");
         fflush(stdout);
     }
     else{
@@ -108,7 +107,6 @@ void push_helper(Node *headready, Node *new_node){
         headready->prev=NULL;
     }
     else{
-        printf("Whatup\n");
         Node *temp=headready;
         while (temp->next!=NULL){
             temp=temp->next;
@@ -146,6 +144,47 @@ Node* ready_push(Node *headh1, Node *headh2, Node *headwait, Node *headready, in
             Node *temp=pop(headh2);           
             push_helper(headready,temp);
             return temp;
+        }
+    }
+    else{
+        return NULL;
+    }
+}
+
+void updateTime(Node *headh1, Node *headh2, Node *headwait, Node *headready){
+    while (headh1->job!=NULL){
+        headh1->job->total_time+=1;
+        if (headh1->next!=NULL){
+            headh1=headh1->next;  
+        }
+        else{
+            break;
+        }
+    }
+    while (headh2->job!=NULL){
+        headh2->job->total_time+=1;
+        if (headh2->next!=NULL){
+            headh2=headh2->next;  
+        }
+        else{
+            break;
+        }
+    }while (headwait->job!=NULL){
+        headwait->job->total_time+=1;
+        if (headwait->next!=NULL){
+            headwait=headwait->next;  
+        }
+        else{
+            break;
+        }
+    }
+    while (headready->job!=NULL){
+        headready->job->total_time+=1;
+        if (headready->next!=NULL){
+            headready=headready->next;  
+        }
+        else{
+            break;
         }
     }
 }

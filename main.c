@@ -16,8 +16,9 @@ int remaining_memory;
 int devices;
 int remaining_devices;
 int quantum;
+int run_count=0;
 
-Node *running_job;
+Node *running_job=NULL;
 Node *headh1;
 Node *headh2;
 Node *headwait;
@@ -72,57 +73,27 @@ int main(int argc, char *argv[]){
             else{
                 hq2_push(headh2,new_job,main_memory,devices);
             }
-            printf("Hold queue 1\n");
-            display(headh1);
-            fflush(stdout);
-            printf("Hold queue 2\n");
-            display(headh2);
-            Node *temp_node=ready_push(headh1,headh2,headwait,headready,remaining_memory,remaining_devices);
+        }
+        Node *temp_node=ready_push(headh1,headh2,headwait,headready,remaining_memory,remaining_devices);
+        if (temp_node!=NULL){
             remaining_devices-=temp_node->job->used_devices;
             remaining_memory-=temp_node->job->needed_memory;
-            printf("Ready Queue\n");
-            display(headready);
         }
-        Node *temp_node=headready;
-        while (temp_node->job!=NULL){
-            temp_node->job->total_time+=1;
-            if (temp_node->next!=NULL){
-                temp_node=temp_node->next;  
-            }
-            else{
-                break;
-            }
+        if (run_count==0&&headready->job!=NULL){
+            printf("HELLO\n");
+            fflush(stdout);
+            running_job=pop(headready);
         }
-        temp_node=headh1;
-        while(temp_node->job!=NULL){
-            temp_node->job->total_time+=1;
-            if (temp_node->next!=NULL){
-                temp_node=temp_node->next;  
-            }
-            else{
-                break;
-            }
-        }
-        temp_node=headh2;
-        while(temp_node->job!=NULL){
-            temp_node->job->total_time+=1;
-            temp_node=temp_node->next;
-            if (temp_node->next!=NULL){
-                temp_node=temp_node->next;  
-            }
-            else{
-                break;
-            }
-        }
-        temp_node=headwait;
-        while(temp_node->job!=NULL){
-            temp_node->job->total_time+=1;
-            if (temp_node->next!=NULL){
-                temp_node=temp_node->next;  
-            }
-            else{
-                break;
-            }
+        printf("%d\n",remaining_memory);
+        printf("Hold queue 1\n");
+        display(headh1);
+        printf("Hold queue 2\n");
+        display(headh2);
+        printf("Ready Queue\n");
+        display(headready);
+        updateTime(headh1,headh2,headwait,headready);
+        if (running_job!=NULL){
+            run_count++; 
         }
     }
     fflush(stdout);
