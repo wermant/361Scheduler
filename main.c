@@ -93,7 +93,7 @@ int main(int argc, char *argv[]){
                 break;
             }
         }
-        /*temp_node=headh1;
+        temp_node=headh1;
         while(temp_node->job!=NULL){
             temp_node->job->total_time+=1;
             if (temp_node->next!=NULL){
@@ -123,9 +123,7 @@ int main(int argc, char *argv[]){
             else{
                 break;
             }
-        }*/
+        }
     }
     fflush(stdout);
-    Node *temp=pop(headh1);
-    printf("%d %d %d\n",temp->job->job_num,temp->job->arrival,temp->job->priority);
 }
