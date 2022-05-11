@@ -31,6 +31,7 @@ Node *hq2_pop(Node *head){
     Node *ret = head;
     head=head->next;
     head->prev=NULL;
+    ret->next=NULL;
     return ret;
 }
 
