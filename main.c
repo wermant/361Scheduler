@@ -64,6 +64,56 @@ int main(int argc, char *argv[]){
                 hq2_push(headh2,new_job,main_memory,devices);
             }
         }
+        if (strcmp(token,"D")==0){
+            token=strtok(NULL," ");
+            if (strcmp(token,"9999")==0){
+                while (running_job!=NULL){
+                    if (running_job->job->acquired_time==running_job->job->run_time){
+                        finish_push(headfinish,running_job);
+                        remaining_devices+=running_job->job->used_devices;
+                        remaining_memory+=running_job->job->needed_memory;
+                        running_job=NULL;
+                        run_count=0;
+                    }
+                    else if (run_count==quantum && running_job!=NULL){
+                        wait_push(headwait,running_job);
+                        remaining_devices+=running_job->job->used_devices;
+                        remaining_memory+=running_job->job->needed_memory;
+                        running_job=NULL;
+                        run_count=0;
+                    }   
+                    Node *temp_node=ready_push(headh1,headh2,headwait,headready,remaining_memory,remaining_devices);
+                    if (temp_node!=NULL){
+                        remaining_devices-=temp_node->job->used_devices;
+                        remaining_memory-=temp_node->job->needed_memory;
+                    }
+                    if (run_count==0&&headready->job!=NULL){
+                        running_job=pop(headready);
+                    }
+                    printf("Ready Queue\n");
+                    display(headready);
+                    printf("Waiting Queue\n");
+                    display(headwait);
+                    printf("Finished\n");
+                    display(headfinish);
+                    updateTime(headh1,headh2,headwait,headready);
+                    if (running_job!=NULL){
+                        running_job->job->acquired_time++;
+                        running_job->job->total_time++;
+                        run_count++; 
+                    }
+                }
+                return;
+            }
+            else{
+                printf("Waiting Queue\n");
+                display(headwait);
+                printf("Ready Queue\n");
+                display(headready);
+                printf("Finished\n");
+                display(headfinish);
+            }
+        }
         if (running_job!=NULL){
             if (running_job->job->acquired_time==running_job->job->run_time){
                 finish_push(headfinish,running_job);
@@ -88,48 +138,7 @@ int main(int argc, char *argv[]){
         if (run_count==0&&headready->job!=NULL){
             running_job=pop(headready);
         }
-        printf("Waiting Queue\n");
-        display(headwait);
-        printf("Ready Queue\n");
-        display(headready);
-        printf("Finished\n");
-        display(headfinish);
-        updateTime(headh1,headh2,headwait,headready);
-        if (running_job!=NULL){
-            running_job->job->acquired_time++;
-            running_job->job->total_time++;
-            run_count++; 
-        }
-    }
-    while (running_job!=NULL){
-        if (running_job->job->acquired_time==running_job->job->run_time){
-            finish_push(headfinish,running_job);
-            remaining_devices+=running_job->job->used_devices;
-            remaining_memory+=running_job->job->needed_memory;
-            running_job=NULL;
-            run_count=0;
-        }
-        else if (run_count==quantum && running_job!=NULL){
-            wait_push(headwait,running_job);
-            remaining_devices+=running_job->job->used_devices;
-            remaining_memory+=running_job->job->needed_memory;
-            running_job=NULL;
-            run_count=0;
-        }
-        Node *temp_node=ready_push(headh1,headh2,headwait,headready,remaining_memory,remaining_devices);
-        if (temp_node!=NULL){
-            remaining_devices-=temp_node->job->used_devices;
-            remaining_memory-=temp_node->job->needed_memory;
-        }
-        if (run_count==0&&headready->job!=NULL){
-            running_job=pop(headready);
-        }
-        printf("Ready Queue\n");
-        display(headready);
-        printf("Waiting Queue\n");
-        display(headwait);
-        printf("Finished\n");
-        display(headfinish);
+        
         updateTime(headh1,headh2,headwait,headready);
         if (running_job!=NULL){
             running_job->job->acquired_time++;
