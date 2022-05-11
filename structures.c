@@ -3,23 +3,6 @@
 #include <string.h>
 #include "structures.h"
 
-System * createSystem(char str[]){
-    System *sys = malloc(sizeof(System));
-    char *token=strtok(str," ");
-    sys->start_time=atoi(token);
-    token=strtok(NULL," ");
-    sys->main_memory=atoi(token+2);
-    token=strtok(NULL," ");
-    sys->serial_devices=atoi(token+2);
-    token=strtok(NULL," ");
-    sys->quantum = atoi(token+2);
-    return sys;
-}
-
-void destroySystem(System *sys){
-    free(sys);
-}
-
 Job * createJob(char str[]){
     Job *job = malloc(sizeof(Job));
     char *token=strtok(str," ");
