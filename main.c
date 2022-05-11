@@ -77,14 +77,51 @@ int main(int argc, char *argv[]){
             printf("Hold queue 2\n");
             display(headh2);
             ready_push(headh1,headh2,headwait,headready,remaining_memory,remaining_devices);
-            Node *temp=headready;
-            while (temp!=NULL){
-                remaining_devices-=temp->job->used_devices;
-                remaining_memory-=temp->job->needed_memory;
-                temp=temp->next;
-            }
             printf("Ready Queue\n");
             display(headready);
+        }
+        Node *temp_node=headready;
+        while (temp_node->job!=NULL){
+            temp_node->job->total_time+=1;
+            remaining_devices-=temp_node->job->used_devices;
+            remaining_memory-=temp_node->job->needed_memory;
+            if (temp_node->next!=NULL){
+                temp_node=temp_node->next;  
+            }
+            else{
+                break;
+            }
+        }
+        temp_node=headh1;
+        while(temp_node->job!=NULL){
+            temp_node->job->total_time+=1;
+            if (temp_node->next!=NULL){
+                temp_node=temp_node->next;  
+            }
+            else{
+                break;
+            }
+        }
+        temp_node=headh2;
+        while(temp_node->job!=NULL){
+            temp_node->job->total_time+=1;
+            temp_node=temp_node->next;
+            if (temp_node->next!=NULL){
+                temp_node=temp_node->next;  
+            }
+            else{
+                break;
+            }
+        }
+        temp_node=headwait;
+        while(temp_node->job!=NULL){
+            temp_node->job->total_time+=1;
+            if (temp_node->next!=NULL){
+                temp_node=temp_node->next;  
+            }
+            else{
+                break;
+            }
         }
     }
     fflush(stdout);
