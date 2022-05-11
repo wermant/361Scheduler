@@ -34,6 +34,8 @@ Job * createJob(char str[]){
     job->run_time = atoi(token+2);
     token=strtok(NULL," ");
     job->priority = atoi(token+2);
+    job->acquired_time=0;
+    job->total_time=job->arrival;
     return job;
 }
 
@@ -69,4 +71,8 @@ Release * createRelease(char str[]){
 
 void destroyRelease(Release *rel){
     free(rel);
+}
+
+void destroyNode(Node *node){
+    free(node);
 }

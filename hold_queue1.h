@@ -1,9 +1,2 @@
-typedef struct Node{
-    Job *job;
-    struct Node *next;
-    struct Node *prev;
-}Node;
-
-Node *push(Node *,Job *);
-Node *pop(Node *);
-
+Node *hq1_push(Node *,Job *,int,int);
+Node *hq1_pop(Node *);

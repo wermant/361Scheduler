@@ -15,6 +15,9 @@ typedef struct Job{
     int num_devices;
     int run_time;
     int priority;
+    int used_devices;
+    int acquired_time;
+    int total_time;
 }Job;
 
 Job * createJob(char str[]);
@@ -37,3 +40,11 @@ typedef struct Release{
 
 Release * createRelease(char str[]);
 void destroyRelease(Release *);
+
+typedef struct Node{
+    Job *job;
+    struct Node *next;
+    struct Node *prev;
+}Node;
+
+void destroyNode(Node *);
