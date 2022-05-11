@@ -1,1 +1,0 @@
-Node * wait_push(Node *,Node *);
