@@ -21,11 +21,3 @@ Node *wait_push(Node *head, Node *new_node){
         return head;
     }
 }
-
-Node *wait_pop(Node *head){
-    Node *ret = head;
-    head=head->next;
-    head->prev=NULL;
-    ret->next=NULL;
-    return ret;
-}

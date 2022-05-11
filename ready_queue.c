@@ -8,7 +8,17 @@
 Node *ready_push(Node *headh1, Node *headh2, Node *headwait, Node *headready, int total_memory, int total_devices){
     if (headwait!=NULL){
         if (headwait->job->used_devices <=total_devices && headwait->job->needed_memory<=total_memory){
-            return push_helper(headready,headwait);
+            return push_helper(headready,pop(headwait));
+        }
+    }
+    else if (headh1!=NULL){
+        if (headh1->job->used_devices <=total_devices && headh1->job->needed_memory<=total_memory){
+            return push_helper(headready,pop(headh1));
+        }
+    }
+    else if (headh2!=NULL){
+        if (headh2->job->used_devices <=total_devices && headh2->job->needed_memory<=total_memory){
+            return push_helper(headready,pop(headh1));
         }
     }
 }
@@ -21,13 +31,13 @@ Node *push_helper(Node *headready, Node *new_node){
         return headready;
     }
     else{
-        Node *temp=head;
+        Node *temp=headready;
         while (temp->next!=NULL){
             temp=temp->next;
         }
         temp->next=new_node;
         new_node->prev=temp;
         new_node->next=NULL;
-        return head;
+        return headready;
     }
 }

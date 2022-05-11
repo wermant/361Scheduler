@@ -26,11 +26,3 @@ Node *hq2_push(Node *head, Job *new_job,int total_memory,int total_devices){
         return head;
     }
 }
-
-Node *hq2_pop(Node *head){
-    Node *ret = head;
-    head=head->next;
-    head->prev=NULL;
-    ret->next=NULL;
-    return ret;
-}

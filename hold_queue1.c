@@ -50,7 +50,7 @@ Node *hq1_push(Node *head,Job *new_job,int total_memory,int total_devices, int t
     }
 }
 
-Node *hq1_pop(Node *head){
+Node *pop(Node *head){
     Node *ret = head;
     head=head->next;
     head->prev=NULL;
