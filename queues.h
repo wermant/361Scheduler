@@ -1,3 +1,4 @@
+Node *init();
 void hq1_push(Node *,Job *,int, int);
 void hq2_push(Node *,Job *,int,int);
 Node * wait_push(Node *,Node *);

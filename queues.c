@@ -3,6 +3,14 @@
 #include "structures.h"
 #include "queues.h"
 
+Node *init(){
+    Node *head=malloc(sizeof(Node));
+    head->job=NULL;
+    head->next=NULL;
+    head->prev=NULL;
+    return head;
+}
+
 void hq1_push(Node *head,Job *new_job,int total_memory,int total_devices){
     if (new_job->needed_memory > total_memory || new_job->num_devices > total_devices){
         return;

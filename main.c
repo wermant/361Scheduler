@@ -18,7 +18,7 @@ int remaining_devices;
 int quantum;
 int run_count=0;
 
-Node *running_job=NULL;
+Node *running_job;
 Node *headh1;
 Node *headh2;
 Node *headwait;
@@ -26,23 +26,11 @@ Node *headready;
 
 int main(int argc, char *argv[]){
     assert(argc==2);
-    running_job=malloc(sizeof(Node));
-    headh1=malloc(sizeof(Node));
-    headh1->job=NULL;
-    headh1->next=NULL;
-    headh1->prev=NULL;
-    headh2=malloc(sizeof(Node));
-    headh2->job=NULL;
-    headh2->next=NULL;
-    headh2->prev=NULL;
-    headwait=malloc(sizeof(Node));
-    headwait->job=NULL;
-    headwait->next=NULL;
-    headwait->prev=NULL;
-    headready=malloc(sizeof(Node));
-    headready->job=NULL;
-    headready->next=NULL;
-    headready->prev=NULL;
+    running_job=NULL;
+    headh1=init();
+    headh2=init();
+    headwait=init();
+    headready=init();
     FILE *fp;
     char *line=NULL;
     size_t len=0;
@@ -79,18 +67,12 @@ int main(int argc, char *argv[]){
             remaining_devices-=temp_node->job->used_devices;
             remaining_memory-=temp_node->job->needed_memory;
         }
+        printf("%d\n",running_job==NULL);
         if (run_count==0&&headready->job!=NULL){
             printf("HELLO\n");
             fflush(stdout);
             running_job=pop(headready);
         }
-        printf("%d\n",remaining_memory);
-        printf("Hold queue 1\n");
-        display(headh1);
-        printf("Hold queue 2\n");
-        display(headh2);
-        printf("Ready Queue\n");
-        display(headready);
         updateTime(headh1,headh2,headwait,headready);
         if (running_job!=NULL){
             run_count++; 
