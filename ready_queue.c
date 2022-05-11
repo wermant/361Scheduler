@@ -30,23 +30,26 @@ void push_helper(Node *headready, Node *new_node){
     }
 }
 
-void ready_push(Node *headh1, Node *headh2, Node *headwait, Node *headready, int total_memory, int total_devices){
+Node* ready_push(Node *headh1, Node *headh2, Node *headwait, Node *headready, int total_memory, int total_devices){
     if (headwait->job!=NULL){
         if (headwait->job->used_devices <=total_devices && headwait->job->needed_memory<=total_memory){
             Node *temp=pop(headwait);
             push_helper(headready,temp);
+            return temp;
         }
     }
     else if (headh1->job!=NULL){
         if (headh1->job->used_devices <=total_devices && headh1->job->needed_memory<=total_memory){
             Node *temp=pop(headh1);
             push_helper(headready,temp);
+            return temp;
         }
     }
     else if (headh2->job!=NULL){
         if (headh2->job->used_devices <=total_devices && headh2->job->needed_memory<=total_memory){
             Node *temp=pop(headh2);           
             push_helper(headready,temp);
+            return temp;
         }
     }
 }

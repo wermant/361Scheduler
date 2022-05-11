@@ -3,10 +3,11 @@
 #include <string.h>
 #include <assert.h>
 #include "structures.h"
-#include "hold_queue1.h"
+/*#include "hold_queue1.h"
 #include "hold_queue2.h"
 #include "ready_queue.h"
-#include "wait_queue.h"
+#include "wait_queue.h"*/
+#include "queues.h"
 #include "display.h"
 
 int start_time;
@@ -76,15 +77,15 @@ int main(int argc, char *argv[]){
             fflush(stdout);
             printf("Hold queue 2\n");
             display(headh2);
-            ready_push(headh1,headh2,headwait,headready,remaining_memory,remaining_devices);
+            Node *temp_node=ready_push(headh1,headh2,headwait,headready,remaining_memory,remaining_devices);
+            remaining_devices-=temp_node->job->used_devices;
+            remaining_memory-=temp_node->job->needed_memory;
             printf("Ready Queue\n");
             display(headready);
         }
         Node *temp_node=headready;
         while (temp_node->job!=NULL){
             temp_node->job->total_time+=1;
-            remaining_devices-=temp_node->job->used_devices;
-            remaining_memory-=temp_node->job->needed_memory;
             if (temp_node->next!=NULL){
                 temp_node=temp_node->next;  
             }
@@ -92,7 +93,7 @@ int main(int argc, char *argv[]){
                 break;
             }
         }
-        temp_node=headh1;
+        /*temp_node=headh1;
         while(temp_node->job!=NULL){
             temp_node->job->total_time+=1;
             if (temp_node->next!=NULL){
@@ -122,7 +123,7 @@ int main(int argc, char *argv[]){
             else{
                 break;
             }
-        }
+        }*/
     }
     fflush(stdout);
     Node *temp=pop(headh1);
