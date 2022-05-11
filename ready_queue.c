@@ -21,8 +21,6 @@ Node *push_helper(Node *headready, Node *new_node){
         return headready;
     }
     else{
-        Node *new_node=malloc(sizeof(Node));
-        new_node->job=new_job;
         Node *temp=head;
         while (temp->next!=NULL){
             temp=temp->next;
