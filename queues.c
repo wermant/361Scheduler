@@ -43,11 +43,6 @@ void hq1_push(Node *head,Job *new_job,int total_memory,int total_devices){
             head->next->prev=new_node;
             head->next=new_node;
             new_node->prev=head;
-            /*new_node->next=temp;
-            new_node->prev=NULL;
-            temp->prev=new_node;
-            temp->next=head->next;
-            head=new_node;*/
         }
         else if(temp==head&&temp->job->run_time<=new_node->job->run_time&&temp->next==NULL){
             new_node->prev=temp;
@@ -90,12 +85,11 @@ void hq2_push(Node *head, Job *new_job,int total_memory,int total_devices){
     }
 }
 
-Node *wait_push(Node *head, Node *new_node){
-    if (head==NULL){
-        head=new_node;
+void wait_push(Node *head, Node *new_node){
+    if (head->job==NULL){
+        head->job=new_node->job;
         head->next=NULL;
         head->prev=NULL;
-        return head;
     }
     else{
         Node *temp=head;
@@ -194,6 +188,23 @@ void updateTime(Node *headh1, Node *headh2, Node *headwait, Node *headready){
         else{
             break;
         }
+    }
+}
+
+void finish_push(Node *head,Node *new_node){
+    if (head->job==NULL){
+        head->job=new_node->job;
+        head->next=NULL;
+        head->prev=NULL;
+    }
+    else{
+        Node *temp=head;
+        while (temp->next!=NULL){
+            temp=temp->next;
+        }
+        temp->next=new_node;
+        new_node->prev=temp;
+        new_node->next=NULL;
     }
 }
 

@@ -4,7 +4,7 @@
 
 void display(Node *head){
     while (head->job!=NULL){
-        printf("%d\t%d\t%d\t%d\t%d\n",head->job->job_num,head->job->arrival,head->job->needed_memory,head->job->total_time,head->job->run_time);
+        printf("%d\t%d\t%d\t%d\t%d\n",head->job->job_num,head->job->arrival,head->job->acquired_time,head->job->total_time,head->job->run_time);
         if (head->next!=NULL){
             head=head->next;
         }
