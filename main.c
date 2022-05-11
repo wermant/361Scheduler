@@ -43,6 +43,7 @@ void main(int argc, char *argv[]){
         char *temp=line;
         token=strtok(temp," ");
         if (strcmp(token,"C")==0){
+            printf("hello\n");
             token=strtok(NULL," ");
             start_time=atoi(token);
             token = strtok(NULL, " ");
@@ -54,17 +55,31 @@ void main(int argc, char *argv[]){
             token=strtok(NULL, " ");
             quantum=atoi(token+2);
         }
-        if (strcmp(token,"A")==0){
+        else if (strcmp(token,"A")==0){
             Job *new_job=createJob(line+2);
             if (new_job->priority==1){
                 hq1_push(headh1,new_job,main_memory,devices);
-                
             }
             else{
                 hq2_push(headh2,new_job,main_memory,devices);
             }
         }
-        if (strcmp(token,"D")==0){
+        else if (strcmp(token,"Q")==0){
+            printf("heedsa\n");
+            Request *req = createRequest(line+2);
+            if (req->num_devices>remaining_devices){
+                running_job->job->used_devices=req->num_devices;
+                wait_push(headwait,running_job);
+                remaining_devices+=running_job->job->used_devices;
+                remaining_memory+=running_job->job->needed_memory;
+                running_job=NULL;
+                run_count=0;
+            }
+            else{
+                running_job->job->used_devices=req->num_devices;
+            }
+        }
+        else if (strcmp(token,"D")==0){
             token=strtok(NULL," ");
             if (strcmp(token,"9999")==0){
                 while (running_job!=NULL){
@@ -138,6 +153,12 @@ void main(int argc, char *argv[]){
         if (run_count==0&&headready->job!=NULL){
             running_job=pop(headready);
         }
+        printf("Ready Queue\n");
+        display(headready);
+        printf("Waiting Queue\n");
+        display(headwait);
+        printf("Finished\n");
+        display(headfinish);
         updateTime(headh1,headh2,headwait,headready);
         if (running_job!=NULL){
             running_job->job->acquired_time++;
