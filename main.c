@@ -25,7 +25,7 @@ Node *headwait;
 Node *headready;
 Node *headfinish;
 
-int main(int argc, char *argv[]){
+void main(int argc, char *argv[]){
     assert(argc==2);
     running_job=NULL;
     headh1=init();
@@ -138,7 +138,6 @@ int main(int argc, char *argv[]){
         if (run_count==0&&headready->job!=NULL){
             running_job=pop(headready);
         }
-        
         updateTime(headh1,headh2,headwait,headready);
         if (running_job!=NULL){
             running_job->job->acquired_time++;

@@ -198,13 +198,49 @@ void finish_push(Node *head,Node *new_node){
         head->prev=NULL;
     }
     else{
-        Node *temp=head;
+        /*Node *temp=head;
         while (temp->next!=NULL){
             temp=temp->next;
         }
         temp->next=new_node;
         new_node->prev=temp;
-        new_node->next=NULL;
+        new_node->next=NULL;*/
+        Node *temp=head;
+        while (temp->job->job_num<=new_node->job->job_num&&temp->next!=NULL){
+            temp=temp->next;
+        }
+        if (temp==head && temp->job->job_num>new_node->job->job_num&&temp->next==NULL){
+            Job *temp_job=head->job;
+            head->job=new_node->job;
+            new_node->job=temp_job;
+            head->next=new_node;
+            new_node->prev=head;
+            new_node->next=NULL;
+        }
+        else if (temp==head && temp->job->job_num>new_node->job->job_num&&temp->next!=NULL){
+            Job *temp_job=head->job;
+            head->job=new_node->job;
+            new_node->job=temp_job;
+            head->next->prev=new_node;
+            head->next=new_node;
+            new_node->prev=head;
+        }
+        else if(temp==head&&temp->job->job_num<=new_node->job->job_num&&temp->next==NULL){
+            new_node->prev=temp;
+            new_node->next=NULL;
+            temp->next=new_node;
+        }
+        else if (temp->next==NULL&&temp->job->job_num<=new_node->job->job_num){
+            temp->next=new_node;
+            new_node->prev=temp;
+            new_node->next=NULL;
+        }
+        else{
+            new_node->next=temp;
+            new_node->prev=temp->prev;
+            temp->prev->next=new_node;
+            temp->prev=new_node;
+        }
     }
 }
 
