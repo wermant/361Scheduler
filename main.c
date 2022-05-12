@@ -17,6 +17,7 @@ int devices;
 int remaining_devices;
 int quantum;
 int run_count=0;
+int ready_queue_count = 0;
 
 Node *running_job;
 Node *headh1;
@@ -24,6 +25,54 @@ Node *headh2;
 Node *headwait;
 Node *headready;
 Node *headfinish;
+
+int isSafe(Node* head){
+    int work = remaining_devices; 
+    int finish[ready_queue_count];
+    for(int i = 0; i < ready_queue_count; i++){
+        finish[i] = 0; 
+    }
+    Node* temp = head; 
+    int exit_counter = 0;
+    while(exit_counter < ready_queue_count) {
+        int found = 0; 
+        for(int i = 0; i < ready_queue_count; i++){
+            if(finish[i] == 0) {
+                int j = 0; 
+                for(int j = 0; j < ready_queue_count; j++){
+                    if((temp->job->num_devices - temp->job->used_devices) > work) {
+                        break;
+                    }
+                    temp = temp->next;  
+                }
+                if(j == ready_queue_count) {
+                    work += temp->job->used_devices;
+                    exit_counter++; 
+                    finish[i] = 1;
+                    found = 1; 
+                }
+            }
+        }
+        if(found == 0){
+            return 0;
+        }
+    }
+    return 1; 
+}
+
+void grantRequest(Request* req, Node* running_job, Node* head){
+    int need = running_job->job->num_devices - running_job->job->used_devices; 
+    int safe = 0;
+    if(req->num_devices <= need && req->num_devices <= remaining_devices){
+        remaining_devices -= req->num_devices;  //Subtract available devices
+        running_job->job->used_devices += req->num_devices; //Allocate resources to job
+        safe = isSafe(head);  //Check if the new state is safe
+        if(safe == 0) {  //Restore the old state if it was unsafe
+            remaining_devices += req->num_devices;
+            running_job->job->used_devices -= req->num_devices;
+        }
+    }
+}
 
 void main(int argc, char *argv[]){
     assert(argc==2);
@@ -68,7 +117,8 @@ void main(int argc, char *argv[]){
             printf("heedsa\n");
             Request *req = createRequest(line+2);
             //if (req->num_devices>remaining_devices){
-                running_job->job->used_devices=req->num_devices;
+                //running_job->job->used_devices=req->num_devices;
+                grantRequest(req, running_job, headready); //Banker's algorithm to decide whether to grant request
                 wait_push(headwait,running_job);
                 remaining_devices+=running_job->job->used_devices;
                 remaining_memory+=running_job->job->needed_memory;
@@ -149,9 +199,11 @@ void main(int argc, char *argv[]){
         if (temp_node!=NULL){
             remaining_devices-=temp_node->job->used_devices;
             remaining_memory-=temp_node->job->needed_memory;
+            ready_queue_count++; //Increase rqc when adding to rq
         }
         if (run_count==0&&headready->job!=NULL){
             running_job=pop(headready);
+            ready_queue_count--;  //Decrease rqc when removing from rq
         }
         printf("Ready Queue\n");
         display(headready);
