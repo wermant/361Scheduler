@@ -1,3 +1,4 @@
+// File Declarations
 Node *init();
 void hq1_push(Node *,Job *,int, int);
 void hq2_push(Node *,Job *,int,int);
