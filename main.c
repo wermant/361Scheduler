@@ -67,17 +67,17 @@ void main(int argc, char *argv[]){
         else if (strcmp(token,"Q")==0){
             printf("heedsa\n");
             Request *req = createRequest(line+2);
-            if (req->num_devices>remaining_devices){
+            //if (req->num_devices>remaining_devices){
                 running_job->job->used_devices=req->num_devices;
                 wait_push(headwait,running_job);
                 remaining_devices+=running_job->job->used_devices;
                 remaining_memory+=running_job->job->needed_memory;
                 running_job=NULL;
                 run_count=0;
-            }
-            else{
-                running_job->job->used_devices=req->num_devices;
-            }
+            //}
+            //else{
+                //running_job->job->used_devices=req->num_devices;
+            //}
         }
         else if (strcmp(token,"D")==0){
             token=strtok(NULL," ");
