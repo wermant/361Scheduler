@@ -118,9 +118,9 @@ void main(int argc, char *argv[]){
             }
         }
         else if (strcmp(token,"Q")==0){
-            printf("Request arrived\n");
             //printf(" = %d\n", running_job->job->job_num); 
             //printf("Running job acquired time: %d\n", running_job->job->acquired_time);
+            printf("Request read");
             Request *req = createRequest(line+2);
             if(req->job_num == running_job->job->job_num){
                 //Banker's algorithm to decide whether to grant request
