@@ -122,21 +122,20 @@ void main(int argc, char *argv[]){
             //printf(" = %d\n", running_job->job->job_num); 
             //printf("Running job acquired time: %d\n", running_job->job->acquired_time);
             Request *req = createRequest(line+2);
-            //if (req->num_devices>remaining_devices){
-            //running_job->job->used_devices=req->num_devices;
-            //Banker's algorithm to decide whether to grant request
-            
-            if(grantRequest(req, running_job, headready) == 1){
-                running_job = pop(running_job);
-                push_helper(headready, running_job);
+            if(req->job_num == running_job->job->job_num){
+                //Banker's algorithm to decide whether to grant request
+                if(grantRequest(req, running_job, headready) == 1){
+                    running_job = pop(running_job);
+                    push_helper(headready, running_job);
+                }
+                else {
+                    running_job = pop(running_job);
+                    wait_push(headwait,running_job);
+                }
+                //remaining_memory+=running_job->job->needed_memory;
+                running_job=NULL;
+                run_count=0;
             }
-            else {
-                running_job = pop(running_job);
-                wait_push(headwait,running_job);
-            }
-            //remaining_memory+=running_job->job->needed_memory;
-            running_job=NULL;
-            run_count=0;
             //}
             //else{
                 //running_job->job->used_devices=req->num_devices;
