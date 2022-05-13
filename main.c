@@ -60,7 +60,7 @@ int isSafe(Node* head){
     return 1; 
 }
 
-void grantRequest(Request* req, Node* running_job, Node* head){
+int grantRequest(Request* req, Node* running_job, Node* head){
     int need = running_job->job->num_devices - running_job->job->used_devices; 
     int safe = 0;
     if(req->num_devices <= need && req->num_devices <= remaining_devices){
@@ -72,6 +72,7 @@ void grantRequest(Request* req, Node* running_job, Node* head){
             running_job->job->used_devices -= req->num_devices;
         }
     }
+    return safe; 
 }
 
 void main(int argc, char *argv[]){
@@ -92,7 +93,7 @@ void main(int argc, char *argv[]){
         char *temp=line;
         token=strtok(temp," ");
         if (strcmp(token,"C")==0){
-            printf("hello\n");
+            //printf("hello\n");
             token=strtok(NULL," ");
             start_time=atoi(token);
             token = strtok(NULL, " ");
@@ -106,24 +107,28 @@ void main(int argc, char *argv[]){
         }
         else if (strcmp(token,"A")==0){
             Job *new_job=createJob(line+2);
+            printf("Job read from line\n");
             if (new_job->priority==1){
                 hq1_push(headh1,new_job,main_memory,devices);
+                printf("Job %d added to HQ1\n", new_job->job_num);
             }
             else{
                 hq2_push(headh2,new_job,main_memory,devices);
+                printf("Job %d added to HQ2\n", new_job->job_num);
             }
         }
         else if (strcmp(token,"Q")==0){
-            printf("heedsa\n");
+            printf("Request read from line\n");
             Request *req = createRequest(line+2);
             //if (req->num_devices>remaining_devices){
-                //running_job->job->used_devices=req->num_devices;
-                grantRequest(req, running_job, headready); //Banker's algorithm to decide whether to grant request
-                wait_push(headwait,running_job);
-                remaining_devices+=running_job->job->used_devices;
-                remaining_memory+=running_job->job->needed_memory;
-                running_job=NULL;
-                run_count=0;
+            //running_job->job->used_devices=req->num_devices;
+            //Banker's algorithm to decide whether to grant request
+            printf("Req num %d\n", req->job_num);
+            grantRequest(req, running_job, headready);
+            /*wait_push(headwait,running_job);
+            remaining_memory+=running_job->job->needed_memory;
+            running_job=NULL;
+            run_count=0;*/
             //}
             //else{
                 //running_job->job->used_devices=req->num_devices;
@@ -181,6 +186,7 @@ void main(int argc, char *argv[]){
         }
         if (running_job!=NULL){
             if (running_job->job->acquired_time==running_job->job->run_time){
+                pop(running_job);
                 finish_push(headfinish,running_job);
                 remaining_devices+=running_job->job->used_devices;
                 remaining_memory+=running_job->job->needed_memory;
@@ -188,22 +194,24 @@ void main(int argc, char *argv[]){
                 run_count=0;
             }  
             else if (run_count==quantum && running_job!=NULL){
-                wait_push(headwait,running_job);
+                running_job = pop(running_job);
+                wait_push(headwait, running_job);
+                printf("Wait Queue Head is %d", headwait->job->job_num);
                 remaining_devices+=running_job->job->used_devices;
                 remaining_memory+=running_job->job->needed_memory;
                 running_job=NULL;
                 run_count=0;
-            }
+            } 
         }
         Node *temp_node=ready_push(headh1,headh2,headwait,headready,remaining_memory,remaining_devices);
         if (temp_node!=NULL){
             remaining_devices-=temp_node->job->used_devices;
             remaining_memory-=temp_node->job->needed_memory;
             ready_queue_count++; //Increase rqc when adding to rq
+            printf("RQ Head is %d\n", headready->job->job_num);
         }
-        if (run_count==0&&headready->job!=NULL){
-            running_job=pop(headready);
-            ready_queue_count--;  //Decrease rqc when removing from rq
+        if (run_count == 0 && headready->job!=NULL){
+            running_job = headready;
         }
         printf("Ready Queue\n");
         display(headready);

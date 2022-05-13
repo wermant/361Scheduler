@@ -137,13 +137,15 @@ Node* ready_push(Node *headh1, Node *headh2, Node *headwait, Node *headready, in
     else if (headh1->job!=NULL){
         if (headh1->job->used_devices <=total_devices && headh1->job->needed_memory<=total_memory){
             Node *temp=pop(headh1);
+            printf("Popped Job %d from HQ1\n", temp->job->job_num);
             push_helper(headready,temp);
             return temp;
         }
     }
     else if (headh2->job!=NULL){
         if (headh2->job->used_devices <=total_devices && headh2->job->needed_memory<=total_memory){
-            Node *temp=pop(headh2);           
+            Node *temp=pop(headh2);        
+            printf("Popped Job %d from HQ2\n", temp->job->job_num);   
             push_helper(headready,temp);
             return temp;
         }
