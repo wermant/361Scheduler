@@ -39,14 +39,17 @@ int isSafe(Node* head){
         int found = 0; 
         for(int i = 0; i < ready_queue_count; i++){
             if(finish[i] == 0) {
-                int j = 0; 
+                /*int j = 0; 
                 for(int j = 0; j < ready_queue_count; j++){
                     if((temp->job->num_devices - temp->job->used_devices) > work) {
                         break;
                     }
                     temp = temp->next;  
+                }*/
+                if(temp->job->num_devices - temp->job->used_devices > work){
+                    break;
                 }
-                if(j == ready_queue_count) {
+                else {
                     work += temp->job->used_devices;
                     exit_counter++; 
                     finish[i] = 1;
@@ -61,13 +64,13 @@ int isSafe(Node* head){
     return 1; 
 }
 
-int grantRequest(Request* req, Node* running_job, Node* head){
+int grantRequest(Request* req, Node* running_job){
     int need = running_job->job->num_devices - running_job->job->used_devices; 
     int safe = 0;
     if(req->num_devices <= need && req->num_devices <= remaining_devices){
         remaining_devices -= req->num_devices;  //Subtract available devices
         running_job->job->used_devices += req->num_devices; //Allocate resources to job
-        safe = isSafe(head);  //Check if the new state is safe
+        safe = isSafe(running_job);  //Check if the new state is safe
         if(safe == 0) {  //Restore the old state if it was unsafe
             remaining_devices += req->num_devices;
             running_job->job->used_devices -= req->num_devices;
@@ -206,10 +209,10 @@ void main(int argc, char *argv[]){
                 //Banker's algorithm to decide whether to grant request
                 if (req->job_num==running_job->job->job_num){
                     running_job->job->num_requests++;
-                    if(grantRequest(req, running_job, headready) == 1){
+                    if(grantRequest(req, running_job) == 1){
+                        printf("Request granted\n");
                     }
                     else {
-                        printf("here\n");
                         running_job = pop(running_job);
                         wait_push(headwait,running_job);
                     }
