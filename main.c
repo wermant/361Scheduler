@@ -3,10 +3,6 @@
 #include <string.h>
 #include <assert.h>
 #include "structures.h"
-/*#include "hold_queue1.h"
-#include "hold_queue2.h"
-#include "ready_queue.h"
-#include "wait_queue.h"*/
 #include "queues.h"
 #include "display.h"
 
@@ -16,7 +12,7 @@ int remaining_memory;
 int devices;
 int remaining_devices;
 int quantum;
-int run_count=1;
+int run_count=0;
 int ready_queue_count = 0;
 int *time_arr;
 
@@ -114,29 +110,22 @@ void main(int argc, char *argv[]){
     line=NULL;
     len=0;
     while (time_arr[index]!=9999){
+        printf("Run Count: %d\n",run_count);
         if (time_arr[index]==0){
             if (running_job!=NULL){
                 if (running_job->job->acquired_time==running_job->job->run_time){
                     finish_push(headfinish,running_job);
+                    pop(headready);
                     remaining_devices+=running_job->job->used_devices;
                     remaining_memory+=running_job->job->needed_memory;
                     running_job=NULL;
                 }  
                 else if (run_count==quantum && running_job!=NULL){
-                    if (running_job->job->num_requests==0){
+                        run_count=0;
                         running_job=NULL;
                         Node *temp = pop(headready);
                         cpu_to_ready(headready,temp);
                         running_job=headready;
-                    }
-                    else{
-                        running_job=NULL;
-                        Node *temp = pop(headready);
-                        wait_push(headwait,temp);
-                        remaining_devices+=running_job->job->used_devices;
-                        remaining_memory+=running_job->job->needed_memory;
-                        running_job=headready;
-                    } 
                     /*running_job = pop(running_job);
                     wait_push(headwait, running_job);
                     printf("Wait Queue Head is %d", headwait->job->job_num);
@@ -167,7 +156,7 @@ void main(int argc, char *argv[]){
                 run_count++;
             }
             else{
-                run_count=1;
+                run_count=0;
             }
         }
         else{
@@ -213,12 +202,11 @@ void main(int argc, char *argv[]){
                         printf("Request granted\n");
                     }
                     else {
-                        running_job = pop(running_job);
-                        wait_push(headwait,running_job);
+                        Node *temp=pop(headready);
+                        wait_push(headwait,temp);
+                        running_job=headready;
                     }
                     //remaining_memory+=running_job->job->needed_memory;
-                    running_job=NULL;
-                    run_count=1;
                     //}
                     //else{
                         //running_job->job->used_devices=req->num_devices;
@@ -229,26 +217,28 @@ void main(int argc, char *argv[]){
                 token=strtok(NULL," ");
                 if (strcmp(token,"9999")==0){
                     while (running_job!=NULL){
-                        if (running_job->job->acquired_time>=running_job->job->run_time){
-                            finish_push(headfinish,running_job);
-                            remaining_devices+=running_job->job->used_devices;
-                            remaining_memory+=running_job->job->needed_memory;
+                        if (running_job->job->acquired_time==running_job->job->run_time){
                             running_job=NULL;
-                            run_count=1;
+                            Node *temp = pop(headready);
+                            finish_push(headfinish,temp);
+                            remaining_devices+=temp->job->used_devices;
+                            remaining_memory+=temp->job->needed_memory;
+                            running_job=headready;
+                            run_count=0;
                         }
-                        else if (run_count>=quantum && running_job!=NULL){
+                        else if (run_count==quantum && running_job!=NULL){
                             wait_push(headwait,running_job);
                             remaining_devices+=running_job->job->used_devices;
                             remaining_memory+=running_job->job->needed_memory;
                             running_job=NULL;
-                            run_count=1;
+                            run_count=0;
                         }   
                         Node *temp_node=ready_push(headh1,headh2,headwait,headready,remaining_memory,remaining_devices);
                         if (temp_node!=NULL){
                             remaining_devices-=temp_node->job->used_devices;
                             remaining_memory-=temp_node->job->needed_memory;
                         }
-                        if (run_count==0&&headready->job!=NULL){
+                        if (run_count==1&&headready->job!=NULL){
                             running_job=pop(headready);
                         }
                         printf("Ready Queue\n");
@@ -285,28 +275,20 @@ void main(int argc, char *argv[]){
             }
             if (running_job!=NULL){
                 if (running_job->job->acquired_time==running_job->job->run_time){
-                    finish_push(headfinish,running_job);
-                    remaining_devices+=running_job->job->used_devices;
-                    remaining_memory+=running_job->job->needed_memory;
                     running_job=NULL;
+                    Node *temp = pop(headready);
+                    finish_push(headfinish,temp);
+                    remaining_devices+=temp->job->used_devices;
+                    remaining_memory+=temp->job->needed_memory;
+                    running_job=headready;
+                    run_count=0;
                 }  
-                else if (run_count==quantum && running_job!=NULL){
-                   
-                    if (running_job->job->num_requests==0){
-                        running_job=NULL;
-                        printf("HERE\n");
-                        Node *temp = pop(headready);
-                        cpu_to_ready(headready,temp);
-                        running_job=headready;
-                    }
-                    else{
-                        running_job=NULL;
-                        Node *temp = pop(headready);
-                        wait_push(headwait,temp);
-                        remaining_devices+=running_job->job->used_devices;
-                        remaining_memory+=running_job->job->needed_memory;
-                        running_job=headready;
-                    } 
+                else if (run_count==quantum){
+                    running_job=NULL;
+                    printf("HERE\n");
+                    Node *temp = pop(headready);
+                    cpu_to_ready(headready,temp);
+                    running_job=headready;
                     /*running_job = pop(running_job);
                     wait_push(headwait, running_job);
                     printf("Wait Queue Head is %d\n", headwait->job->job_num);
@@ -337,7 +319,7 @@ void main(int argc, char *argv[]){
                 run_count++;
             }
             else{
-                run_count=1;
+                run_count=0;
             }
         }
         index++;
