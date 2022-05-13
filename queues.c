@@ -263,6 +263,25 @@ void finish_push(Node *head,Node *new_node){
     }
 }
 
+void cpu_to_ready(Node *head,Node *new_node){
+    if (head->job==NULL){
+        // wait queue is empty, current job will be first in queue
+        head->job=new_node->job;
+        head->next=NULL;
+        head->prev=NULL;
+    }
+    else{
+        // sets current job at the end of the queue
+        Node *temp=head;
+        while (temp->next!=NULL){
+            temp=temp->next;
+        }
+        temp->next=new_node;
+        new_node->prev=temp;
+        new_node->next=NULL;
+    }
+}
+
 // Pop: Removing a job from its current queue when able to
 Node *pop(Node *head){
     Node *ret=malloc(sizeof(Node));

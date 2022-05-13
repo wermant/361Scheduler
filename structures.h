@@ -8,6 +8,7 @@ typedef struct Job{
     int used_devices;
     int acquired_time;
     int total_time;
+    int num_requests;
 }Job;
 
 Job * createJob(char str[]);

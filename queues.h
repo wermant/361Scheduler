@@ -7,4 +7,5 @@ Node * ready_push(Node *headh1, Node *headh2, Node *headwait, Node *headready, i
 void push_helper(Node *, Node *);
 void updateTime(Node *,Node *,Node *, Node *);
 void finish_push(Node *,Node *);
+void cpu_to_ready(Node *,Node *);
 Node *pop(Node *);
