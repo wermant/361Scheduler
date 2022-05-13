@@ -118,17 +118,25 @@ void main(int argc, char *argv[]){
             }
         }
         else if (strcmp(token,"Q")==0){
-            printf("Request read from line\n");
+            printf("Request arrived\n");
+            //printf(" = %d\n", running_job->job->job_num); 
+            //printf("Running job acquired time: %d\n", running_job->job->acquired_time);
             Request *req = createRequest(line+2);
             //if (req->num_devices>remaining_devices){
             //running_job->job->used_devices=req->num_devices;
             //Banker's algorithm to decide whether to grant request
-            printf("Req num %d\n", req->job_num);
-            grantRequest(req, running_job, headready);
-            /*wait_push(headwait,running_job);
-            remaining_memory+=running_job->job->needed_memory;
+            
+            if(grantRequest(req, running_job, headready) == 1){
+                running_job = pop(running_job);
+                push_helper(headready, running_job);
+            }
+            else {
+                running_job = pop(running_job);
+                wait_push(headwait,running_job);
+            }
+            //remaining_memory+=running_job->job->needed_memory;
             running_job=NULL;
-            run_count=0;*/
+            run_count=0;
             //}
             //else{
                 //running_job->job->used_devices=req->num_devices;
@@ -212,6 +220,7 @@ void main(int argc, char *argv[]){
         }
         if (run_count == 0 && headready->job!=NULL){
             running_job = headready;
+            printf("Running Job Is: %d\n", running_job->job->job_num);
         }
         printf("Ready Queue\n");
         display(headready);
@@ -224,6 +233,8 @@ void main(int argc, char *argv[]){
             running_job->job->acquired_time++;
             running_job->job->total_time++;
             run_count++; 
+            printf("Running Job Is: %d\n", running_job->job->job_num);
+            printf("Running job acquired time: %d\n", running_job->job->acquired_time);
         }
     }
 }
