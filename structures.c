@@ -19,6 +19,7 @@ Job * createJob(char str[]){
     job->priority = atoi(token+2);
     job->acquired_time=0;
     job->total_time=0;
+    job->num_requests=0;
     return job;
 }
 

@@ -3,6 +3,7 @@
 #include "structures.h"
 #include "queues.h"
 
+// Job initialization
 Node *init(){
     Node *head=malloc(sizeof(Node));
     head->job=NULL;
@@ -11,7 +12,10 @@ Node *init(){
     return head;
 }
 
+// Hold Queue 1: Shortest Job First (SJF)
+// Push: Determining where job will be placed in Hold Queue 1
 void hq1_push(Node *head,Job *new_job,int total_memory,int total_devices){
+    // New job cannot be placed in queue if its main memory or devices is greater than the available space
     if (new_job->needed_memory > total_memory || new_job->num_devices > total_devices){
         return;
     }
@@ -63,16 +67,20 @@ void hq1_push(Node *head,Job *new_job,int total_memory,int total_devices){
     }
 }
 
+// Hold Queue 2: First In First Out (FIFO)
+// Push: Determining where job will be placed in Hold Queue 2
 void hq2_push(Node *head, Job *new_job,int total_memory,int total_devices){
+    // New job cannot be placed in queue if its main memory or devices is greater than the available space
     if (new_job->needed_memory > total_memory || new_job->num_devices > total_devices){
         return;
     }
     else if (head->job==NULL){
+        // hold queue is empty, current job will be first in queue
         head->job=new_job;
         head->next=NULL;
         head->prev=NULL;
     }
-    else{
+    else{ // sets current job at the end of the queue
         Node *new_node=malloc(sizeof(Node));
         new_node->job=new_job;
         Node *temp=head;
@@ -85,13 +93,17 @@ void hq2_push(Node *head, Job *new_job,int total_memory,int total_devices){
     }
 }
 
+// Wait Queue: Jobs will enter wait queue until the ready queue has the space for them
+// Push: Determining where job will be placed in Wait Queue
 void wait_push(Node *head, Node *new_node){
     if (head->job==NULL){
+        // wait queue is empty, current job will be first in queue
         head->job=new_node->job;
         head->next=NULL;
         head->prev=NULL;
     }
     else{
+        // sets current job at the end of the queue
         Node *temp=head;
         while (temp->next!=NULL){
             temp=temp->next;
@@ -102,6 +114,7 @@ void wait_push(Node *head, Node *new_node){
     }
 }
 
+// 
 void push_helper(Node *headready, Node *new_node){
     if (headready->job==NULL){
         headready->job=new_node->job;
@@ -126,6 +139,8 @@ void push_helper(Node *headready, Node *new_node){
     }
 }
 
+// Ready Queue: Process is placed in ready queue before entering the CPU
+// Push: Determining where the job will be placed in ready queue
 Node* ready_push(Node *headh1, Node *headh2, Node *headwait, Node *headready, int total_memory, int total_devices){
     if (headwait->job!=NULL){
         if (headwait->job->used_devices <=total_devices && headwait->job->needed_memory<=total_memory){
@@ -155,6 +170,7 @@ Node* ready_push(Node *headh1, Node *headh2, Node *headwait, Node *headready, in
     }
 }
 
+// 
 void updateTime(Node *headh1, Node *headh2, Node *headwait, Node *headready){
     while (headh1->job!=NULL){
         headh1->job->total_time+=1;
@@ -193,6 +209,7 @@ void updateTime(Node *headh1, Node *headh2, Node *headwait, Node *headready){
     }
 }
 
+// 
 void finish_push(Node *head,Node *new_node){
     if (head->job==NULL){
         head->job=new_node->job;
@@ -246,6 +263,26 @@ void finish_push(Node *head,Node *new_node){
     }
 }
 
+void cpu_to_ready(Node *head,Node *new_node){
+    if (head->job==NULL){
+        // wait queue is empty, current job will be first in queue
+        head->job=new_node->job;
+        head->next=NULL;
+        head->prev=NULL;
+    }
+    else{
+        // sets current job at the end of the queue
+        Node *temp=head;
+        while (temp->next!=NULL){
+            temp=temp->next;
+        }
+        temp->next=new_node;
+        new_node->prev=temp;
+        new_node->next=NULL;
+    }
+}
+
+// Pop: Removing a job from its current queue when able to
 Node *pop(Node *head){
     Node *ret=malloc(sizeof(Node));
     if (head->next==NULL){
