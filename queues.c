@@ -189,7 +189,8 @@ void updateTime(Node *headh1, Node *headh2, Node *headwait, Node *headready){
         else{
             break;
         }
-    }while (headwait->job!=NULL){
+    }
+    while (headwait->job!=NULL){
         headwait->job->total_time+=1;
         if (headwait->next!=NULL){
             headwait=headwait->next;  
@@ -198,7 +199,7 @@ void updateTime(Node *headh1, Node *headh2, Node *headwait, Node *headready){
             break;
         }
     }
-    while (headready->job!=NULL){
+    while (headready!=NULL&&headready->job!=NULL){
         headready->job->total_time+=1;
         if (headready->next!=NULL){
             headready=headready->next;  
