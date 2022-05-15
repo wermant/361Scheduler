@@ -9,6 +9,7 @@ typedef struct Job{
     int acquired_time;
     int total_time;
     int num_requests;
+    int pending_request;
 }Job;
 
 Job * createJob(char str[]);

@@ -60,16 +60,19 @@ int isSafe(Node* head){
     return 1; 
 }
 
-int grantRequest(Request* req, Node* running_job){
+int grantRequest(int requested_devices, Node* running_job){
     int need = running_job->job->num_devices - running_job->job->used_devices; 
+    printf("Running Job %d needs %d devices\n", running_job->job->job_num, need);
+     printf("Running Job %d requests %d devices\n", running_job->job->job_num, requested_devices);
+    printf("There are %d available devices\n", remaining_devices);
     int safe = 0;
-    if(req->num_devices <= need && req->num_devices <= remaining_devices){
-        remaining_devices -= req->num_devices;  //Subtract available devices
-        running_job->job->used_devices += req->num_devices; //Allocate resources to job
-        safe = isSafe(running_job);  //Check if the new state is safe
+    if(requested_devices <= need && requested_devices <= remaining_devices){
+        remaining_devices -= requested_devices;  //Subtract available devices
+        running_job->job->used_devices += requested_devices; //Allocate resources to job
+        safe = isSafe(headready);  //Check if the new state is safe
         if(safe == 0) {  //Restore the old state if it was unsafe
-            remaining_devices += req->num_devices;
-            running_job->job->used_devices -= req->num_devices;
+            remaining_devices += requested_devices;
+            running_job->job->used_devices -= requested_devices;
         }
     }
     return safe; 
@@ -119,6 +122,22 @@ void main(int argc, char *argv[]){
                     finish_push(headfinish,temp);
                     remaining_devices+=temp->job->used_devices;
                     remaining_memory+=temp->job->needed_memory;
+                    //Check wait queue if requests can be granted upon device release
+                    if(headwait->job != NULL){
+                        Node *wait_node = headwait;
+                        while(wait_node != NULL){
+                            if(grantRequest(wait_node->job->pending_request, wait_node) == 1){
+                                //Push to ready queue if safe, granting request in the process
+                                wait_node->job->pending_request = 0;
+                                wait_node = wait_node->next; 
+                                Node *temp2 = pop(wait_node->prev);
+                                push_helper(headready, temp2);
+                            }
+                            else {
+                                wait_node = wait_node->next; 
+                            }
+                        }
+                    }
                     running_job=headready;
                     run_count=0;
                 }  
@@ -159,6 +178,22 @@ void main(int argc, char *argv[]){
                     finish_push(headfinish,temp);
                     remaining_devices+=temp->job->used_devices;
                     remaining_memory+=temp->job->needed_memory;
+                    //Check wait queue if requests can be granted upon device release
+                    if(headwait->job != NULL){
+                        Node *wait_node = headwait; 
+                        while(wait_node != NULL){
+                            if(grantRequest(wait_node->job->pending_request, wait_node) == 1){
+                                //Push to ready queue if safe, granting request in the process
+                                wait_node->job->pending_request = 0; 
+                                wait_node = wait_node->next; 
+                                Node *temp2 = pop(wait_node->prev);
+                                push_helper(headready, temp2);
+                            }
+                            else {
+                                wait_node = wait_node->next; 
+                            }
+                        }
+                    }
                     run_count=0;
                 }  
                 else if (run_count==quantum && running_job!=NULL){
@@ -187,6 +222,8 @@ void main(int argc, char *argv[]){
                 if (running_job!=NULL){
                     running_job->job->acquired_time++;
                     running_job->job->total_time++;
+                   /* printf("Running Job is %d\n", running_job->job->job_num);
+                    printf("Running Job acquired time is %d\n", running_job->job->acquired_time); */
                 }
                 if (run_count!=quantum){
                     run_count++;
@@ -202,7 +239,7 @@ void main(int argc, char *argv[]){
             printf("Finished\n");
             display(headfinish);
         }
-        else{
+        else {
             getline(&line,&len,fp);
             char *temp=line;
             token=strtok(temp," ");
@@ -229,13 +266,14 @@ void main(int argc, char *argv[]){
             }
             else if (strcmp(token,"Q")==0){
                 Request *req = createRequest(line+2);
+                printf("Running Job %d during request %d\n", running_job->job->job_num, req->job_num);
                 //Banker's algorithm to decide whether to grant request
                 if (req->job_num==running_job->job->job_num){
                     running_job->job->num_requests++;
-                    if(grantRequest(req, running_job) == 1){
-                    }
-                    else {
+                    if(grantRequest(req->num_devices, running_job) == 0){
                         Node *temp=pop(headready);
+                        //Save the request information before sending to wait queue
+                        temp->job->pending_request = req->num_devices;
                         wait_push(headwait,temp);
                         running_job=headready;
                     }
@@ -286,6 +324,8 @@ void main(int argc, char *argv[]){
             if (running_job!=NULL){
                 running_job->job->acquired_time++;
                 running_job->job->total_time++;
+                /*printf("Running Job is %d\n", running_job->job->job_num);
+                printf("Running Job acquired time is %d\n", running_job->job->acquired_time); */
             }
             if (run_count!=quantum){
                 run_count++;

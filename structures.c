@@ -20,6 +20,7 @@ Job * createJob(char str[]){
     job->acquired_time=0;
     job->total_time=0;
     job->num_requests=0;
+    job->pending_request=0; 
     return job;
 }
 
