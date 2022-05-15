@@ -236,6 +236,7 @@ void main(int argc, char *argv[]){
             ready_display(headready);
             printf("Waiting Queue\n");
             ready_display(headwait);
+            printf("System Turnaround Time: %f\n",avg_turnaround(headfinish));        
         }
         else {
             getline(&line,&len,fp);
@@ -283,40 +284,6 @@ void main(int argc, char *argv[]){
                     running_job->job->used_devices-= rel->num_devices;
                     remaining_devices+=rel->num_devices;
                 }
-            }
-            /*if (strcmp(token,"D")==0){
-                printf("At time %s",line+2);
-                printf("Current Available Main Memory: %d\n",remaining_memory);
-                printf("Current Devices: %d\n",remaining_devices);
-                printf("Completed Jobs:\n");
-                finish_display(headfinish);
-                printf("Hold Queue 1:\n");
-                hold_display(headh1);
-                printf("Hold Queue 2:\n");
-                hold_display(headh2);
-                printf("Ready Queue:\n");
-                ready_display(headready->next);
-                printf("Process Running on CPU:\n");
-                running_display(running_job);
-                printf("Waiting Queue\n");
-                ready_display(headwait);
-            }*/
-            if (strcmp(token,"D")==0){
-                printf("At time %s",line+2);
-                printf("Current Available Main Memory: %d\n",remaining_memory);
-                printf("Current Devices: %d\n",remaining_devices);
-                printf("Completed Jobs:\n");
-                finish_display(headfinish);
-                printf("Hold Queue 1:\n");
-                hold_display(headh1);
-                printf("Hold Queue 2:\n");
-                hold_display(headh2);
-                printf("Ready Queue:\n");
-                ready_display(headready->next);
-                printf("Process Running on CPU:\n");
-                running_display(running_job);
-                printf("Waiting Queue\n");
-                ready_display(headwait);
             }
             Node *temp_node=ready_push(headh1,headh2,headwait,headready,remaining_memory,remaining_devices);
             if (temp_node!=NULL){
@@ -371,7 +338,22 @@ void main(int argc, char *argv[]){
             else{
                 run_count=1;
             }
-            
+            if (strcmp(token,"D")==0){
+                printf("At time %s",line+2);
+                printf("Current Available Main Memory: %d\n",remaining_memory);
+                printf("Current Devices: %d\n",remaining_devices);
+                finish_display(headfinish);
+                printf("Hold Queue 1:\n");
+                hold_display(headh1);
+                printf("Hold Queue 2:\n");
+                hold_display(headh2);
+                printf("Ready Queue:\n");
+                ready_display(headready->next);
+                printf("Process Running on CPU:\n");
+                running_display(running_job);
+                printf("Waiting Queue\n");
+                ready_display(headwait);
+            }
         }
         
         index++;

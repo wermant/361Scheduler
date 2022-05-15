@@ -3,11 +3,12 @@
 #include "structures.h"
 
 void finish_display(Node *head){
+    printf("Completed Jobs:\n");
     printf("--------------------------------------------------------\n");
     printf("Job ID    Arrival Time    Finish Time    Turnaround Time\n");
     printf("========================================================\n");
     while (head->job!=NULL){
-        printf("   %d\t\t%d\t\t%d      \t\t%d\n", head->job->job_num, head->job->arrival,head->job->total_time+head->job->arrival, head->job->total_time);
+        printf("   %d\t\t%d\t\t%d    \t\t%d\n", head->job->job_num, head->job->arrival,head->job->total_time+head->job->arrival, head->job->total_time);
         if (head->next!=NULL){
             head=head->next;
         }

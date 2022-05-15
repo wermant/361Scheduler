@@ -9,3 +9,4 @@ void updateTime(Node *,Node *,Node *, Node *);
 void finish_push(Node *,Node *);
 void cpu_to_ready(Node *,Node *);
 Node *pop(Node *);
+float avg_turnaround(Node *);

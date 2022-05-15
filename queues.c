@@ -316,3 +316,15 @@ Node *pop(Node *node){
         return ret; 
     }
 }
+
+float avg_turnaround(Node *head){
+    double average=0;
+    int count =0;
+    Node *temp = head;
+    while (temp!=NULL){
+        average+=(double)temp->job->total_time;
+        temp=temp->next;
+        count++;
+    }
+    return average/(double)count;
+}
