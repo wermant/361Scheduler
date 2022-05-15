@@ -142,14 +142,14 @@ void push_helper(Node *headready, Node *new_node){
 // Ready Queue: Process is placed in ready queue before entering the CPU
 // Push: Determining where the job will be placed in ready queue
 Node* ready_push(Node *headh1, Node *headh2, Node *headwait, Node *headready, int total_memory, int total_devices){
-    if (headwait->job!=NULL){
+    /*if (headwait->job!=NULL){
         if (headwait->job->used_devices <=total_devices && headwait->job->needed_memory<=total_memory){
             Node *temp=pop(headwait);
             push_helper(headready,temp);
             return temp;
         }
-    }
-    else if (headh1->job!=NULL){
+    }*/
+    if (headh1->job!=NULL){
         if (headh1->job->used_devices <=total_devices && headh1->job->needed_memory<=total_memory){
             Node *temp=pop(headh1);
             //printf("Popped Job %d from HQ1\n", temp->job->job_num);
@@ -157,12 +157,14 @@ Node* ready_push(Node *headh1, Node *headh2, Node *headwait, Node *headready, in
             return temp;
         }
     }
-    else if (headh2->job!=NULL){
-        if (headh2->job->used_devices <=total_devices && headh2->job->needed_memory<=total_memory){
-            Node *temp=pop(headh2);        
-            //printf("Popped Job %d from HQ2\n", temp->job->job_num);   
-            push_helper(headready,temp);
-            return temp;
+    else if (headh1->job==NULL){
+        if (headh2->job!=NULL){
+            if (headh2->job->used_devices <=total_devices && headh2->job->needed_memory<=total_memory){
+                Node *temp=pop(headh2);        
+                //printf("Popped Job %d from HQ2\n", temp->job->job_num);   
+                push_helper(headready,temp);
+                return temp;
+            }
         }
     }
     else{
@@ -233,15 +235,16 @@ void finish_push(Node *head,Node *new_node){
             Job *temp_job=head->job;
             head->job=new_node->job;
             new_node->job=temp_job;
+            new_node->next=head->next;
             head->next=new_node;
             new_node->prev=head;
-            new_node->next=NULL;
         }
         else if (temp==head && temp->job->job_num>new_node->job->job_num&&temp->next!=NULL){
             Job *temp_job=head->job;
             head->job=new_node->job;
             new_node->job=temp_job;
             head->next->prev=new_node;
+            new_node->next=head->next;
             head->next=new_node;
             new_node->prev=head;
         }
