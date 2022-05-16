@@ -289,11 +289,13 @@ void cpu_to_ready(Node *head,Node *new_node){
 // Pop: Removing a job from its current queue when able to
 Node *pop(Node *node){
     Node *ret=malloc(sizeof(Node));
+    //If node is the only node in the queue
     if (node->prev==NULL && node->next == NULL){
         ret->job=node->job;
         node->job=NULL;
         return ret;
     }
+    //If node is the head
     else if (node->prev == NULL){
         Job *temp_job=node->job;
         ret->job=node->job;
@@ -301,12 +303,14 @@ Node *pop(Node *node){
         node->next=node->next->next;
         return ret; 
     }
+    //If node is the tail
     else if (node->next == NULL){
         ret->job = node->job;
         node->prev->next = NULL;
         node->prev = NULL; 
         return ret; 
     }
+    //If node is in the middle of the queue
     else {
         ret->job = node->job;
         node->prev->next = node->next;
