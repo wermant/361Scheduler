@@ -1,1 +1,25 @@
+To use our scheduler, first type make. The makefile will compile the scheduler for you. Then do ./scheduler <Input File> to run the desired input file. For example, 
+do ./scheduler i.txt to see the output for the i.txt file. 
+
+Our design approach was to use several linked lists to represent the queues on the scheduler. Each linked list was composed of node structs that included a job struct, 
+a next pointer, and a prev pointer. A job struct holds the information read from the line about each job. 
+When the scheduler is first run, all the queues are initialized as empty nodes, and as jobs arrive, they are placed into nodes in the
+hold queues based on priority. Hold Queue 1 reads the job's time (R) from the line and sorts the queue from shortest to longest job based on their times. Hold Queue 2
+simply attaches the node to the end of the queue since it is FIFO.
+
+The ready queue first checks hold queue 1 and then hold queue 2 and reads the job's memory requirement. If the job's memory is less than the system's memory, the job
+is added to the ready queue and the job's memory is subtracted from the system memory. The representation of the job running on the CPU is a pointer to the first node
+of the ready queue. Every time a quantum is complete, the first node of the ready queue is moved to the end of the ready queue, and the pointer to the running job now 
+points to the next node in the ready queue. Each job's time on the CPU is kept track of in the field "acquired_time". Once acquired_time matches the job's time (R), it
+is moved to the finish queue. 
+
+When a job makes a request, the running job pointer must be pointing to it for the request to be processed. If this is the case, the request is pretended to be granted
+using the grantRequest function. This function uses banker's algorithm and allocates the requested devices and then calls the isSafe function. 
+isSafe loops through the ready queue using the safety algorithm and checks if granting the request kept the system in a safe state. 
+If the request was not safe, the devices are unallocated from the job, the request information is saved to the job struct, and the job is moved to the wait queue. 
+If the request was safe, the devices remain allocated and the job moves to the end of the ready queue. 
+
+When a job releases devices (either by finishing or explicitly releasing), we then loop through the wait queue and run banker's algorithm on each job in the wait queue.
+We do this by reading the saved request information in the struct and pretending to allocate those resources. If a node on the wait queue can safely be granted a 
+request, it is moved to the end of the ready queue. We do this for each node in the wait queue. \
 
