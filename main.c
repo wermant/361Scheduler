@@ -226,7 +226,6 @@ void main(int argc, char *argv[]){
             printf("At time 9999\n");
             printf("Current Available Main Memory: %d\n",remaining_memory);
             printf("Current Devices: %d\n",remaining_devices);
-            printf("Completed Jobs:\n");
             finish_display(headfinish);
             printf("Hold Queue 1:\n");
             hold_display(headh1);
