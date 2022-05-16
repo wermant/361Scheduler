@@ -30,7 +30,7 @@ void destroyJob(Job *job){
     free(job);
 }
 
-// Request initialization
+// Request for devices initialization
 Request * createRequest(char str[]){
     Request *req = malloc(sizeof(Request));
     char *token=strtok(str," ");
@@ -47,7 +47,7 @@ void destroyRequest(Request *req){
     free(req);
 }
 
-// Release initialization
+// Release of devices initialization
 Release * createRelease(char str[]){
     Release *release = malloc(sizeof(Release));
     char *token=strtok(str," ");
