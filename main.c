@@ -25,27 +25,22 @@ Node *headready;
 Node *headfinish;
 
 int isSafe(Node* head){
-    int work = remaining_devices; 
-    int finish[ready_queue_count];
+    int work = remaining_devices;  //Variable to keep track of available devices
+    int finish[ready_queue_count]; //Vector to keep track of whether a request can be finished
     for(int i = 0; i < ready_queue_count; i++){
         finish[i] = 0; 
     }
     Node* temp = head; 
     int exit_counter = 0;
+    //Loop through ready queue until you determine whether the state is safe
     while(exit_counter < ready_queue_count) {
         int found = 0; 
+        //Loop through each job in the ready queue and check if it can be finished
         for(int i = 0; i < ready_queue_count; i++){
             if(finish[i] == 0) {
-                int j = 0; 
-                /*for(int j = 0; j < ready_queue_count; j++){
-                    if((temp->job->num_devices - temp->job->used_devices) > work) {
-                        break;
-                    }
-                     
-                }*/
-                if(temp!=NULL&&temp->job->num_devices - temp->job->used_devices > work){
-                }
-                else if (temp!=NULL&&temp->job->num_devices - temp->job->used_devices < work){
+                //Check if the job's needed devices exceeds the available devices
+                if(temp!=NULL&&temp->job->num_devices - temp->job->used_devices < work){
+                    //If it does not exceed, add its devices to work and label it as able to be finished
                     work += temp->job->used_devices;
                     exit_counter++; 
                     finish[i] = 1;
@@ -59,16 +54,19 @@ int isSafe(Node* head){
                 temp=head;
             }
         }
+        //State is unsafe
         if(found == 0){
             return 0;
         }
     }
+    //State is safe
     return 1; 
 }
 
 int grantRequest(int requested_devices, Node* running_job){
     int need = running_job->job->num_devices - running_job->job->used_devices; 
     int safe = 0;
+    //Make sure the job isn't requesting too many devices
     if(requested_devices <= need && requested_devices <= remaining_devices){
         remaining_devices -= requested_devices;  //Subtract available devices
         running_job->job->used_devices += requested_devices; //Allocate resources to job
@@ -265,10 +263,10 @@ void main(int argc, char *argv[]){
             else if (strcmp(token,"Q")==0){
                 Request *req = createRequest(line+2);
                 //Banker's algorithm to decide whether to grant request
-                if (req->job_num==running_job->job->job_num){
+                if (req->job_num==running_job->job->job_num){  //Make sure request is coming from job on CPU
                     running_job->job->num_requests++;
-                    if(grantRequest(req->num_devices, running_job) == 0){
-                        Node *temp=pop(headready);
+                    if(grantRequest(req->num_devices, running_job) == 0){ //Send job to wait queue if unsafe
+                        Node *temp=pop(headready); 
                         //Save the request information before sending to wait queue
                         temp->job->pending_request = req->num_devices;
                         wait_push(headwait,temp);
