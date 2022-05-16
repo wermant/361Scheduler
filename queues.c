@@ -3,7 +3,7 @@
 #include "structures.h"
 #include "queues.h"
 
-// Job initialization
+// Initializes a queue
 Node *init(){
     Node *head=malloc(sizeof(Node));
     head->job=NULL;
@@ -114,7 +114,7 @@ void wait_push(Node *head, Node *new_node){
     }
 }
 
-// 
+// Helper for Ready_push that actually adds the node to ready queue
 void push_helper(Node *headready, Node *new_node){
     if (headready->job==NULL){
         headready->job=new_node->job;
@@ -172,7 +172,7 @@ Node* ready_push(Node *headh1, Node *headh2, Node *headwait, Node *headready, in
     }
 }
 
-// 
+//Updates the times of all jobs in the different queues
 void updateTime(Node *headh1, Node *headh2, Node *headwait, Node *headready){
     while (headh1->job!=NULL){
         headh1->job->total_time+=1;
@@ -212,7 +212,7 @@ void updateTime(Node *headh1, Node *headh2, Node *headwait, Node *headready){
     }
 }
 
-// 
+//Pushes jobs onto the finish queue when they complete
 void finish_push(Node *head,Node *new_node){
     if (head->job==NULL){
         head->job=new_node->job;
@@ -220,13 +220,6 @@ void finish_push(Node *head,Node *new_node){
         head->prev=NULL;
     }
     else{
-        /*Node *temp=head;
-        while (temp->next!=NULL){
-            temp=temp->next;
-        }
-        temp->next=new_node;
-        new_node->prev=temp;
-        new_node->next=NULL;*/
         Node *temp=head;
         while (temp->job->job_num<=new_node->job->job_num&&temp->next!=NULL){
             temp=temp->next;
@@ -267,6 +260,7 @@ void finish_push(Node *head,Node *new_node){
     }
 }
 
+//Places the running job to the back of the ready queue
 void cpu_to_ready(Node *head,Node *new_node){
     if (head->job==NULL){
         // wait queue is empty, current job will be first in queue
@@ -321,6 +315,7 @@ Node *pop(Node *node){
     }
 }
 
+//Calculates the average turnaround time for a system
 float avg_turnaround(Node *head){
     double average=0;
     int count =0;

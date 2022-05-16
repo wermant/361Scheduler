@@ -20,7 +20,7 @@ void finish_display(Node *head){
     printf("\n");
 }
 
-// Printing job ID and run time for each job
+// Printing job ID and run time for each job in hold queues
 void hold_display(Node *head){
     printf("--------------------------------------------------------\n");
     printf("Job ID    Run Time\n");
@@ -37,7 +37,7 @@ void hold_display(Node *head){
     printf("\n");
 }
 
-// Printing job ID, run time, and acquired time for each job
+// Printing job ID, run time, and acquired time for each job in the ready queue and wait queue
 void ready_display(Node *head){
     printf("--------------------------------------------------------\n");
     printf("Job ID    Run Time    Time Accrued\n");
@@ -54,7 +54,7 @@ void ready_display(Node *head){
     printf("\n");
 }
 
-// Printing job ID, acquired time, and time left for each job
+// Printing job ID, acquired time, and time left for the running job
 void running_display(Node *head){
     printf("--------------------------------------------------------\n");
     printf("Job ID    Time Accrued    Time Left\n");
