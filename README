@@ -23,3 +23,39 @@ When a job releases devices (either by finishing or explicitly releasing), we th
 We do this by reading the saved request information in the struct and pretending to allocate those resources. If a node on the wait queue can safely be granted a 
 request, it is moved to the end of the ready queue. We do this for each node in the wait queue. \
 
+Sample Output:
+At time 9999
+Current Available Main Memory: 190
+Current Devices: 9
+Completed Jobs:
+--------------------------------------------------------
+Job ID    Arrival Time    Finish Time    Turnaround Time
+========================================================
+   1            3               29              26
+   2            4               33              29
+   3            9               17              8
+   4            13              56              43
+   5            24              57              33
+   6            25              61              36
+
+Hold Queue 1:
+--------------------------------------------------------
+Job ID    Run Time
+========================================================
+
+Hold Queue 2:
+--------------------------------------------------------
+Job ID    Run Time
+========================================================
+
+Ready Queue:
+--------------------------------------------------------
+Job ID    Run Time    Time Accrued
+========================================================
+
+Waiting Queue
+--------------------------------------------------------
+Job ID    Run Time    Time Accrued
+========================================================
+
+System Turnaround Time: 29.166666
