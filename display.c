@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include "structures.h"
 
+// Printing display for completed jobs: Job ID, arrival time, finish time, and turnaround time
 void finish_display(Node *head){
     printf("Completed Jobs:\n");
     printf("--------------------------------------------------------\n");
@@ -19,6 +20,7 @@ void finish_display(Node *head){
     printf("\n");
 }
 
+// Printing job ID and run time for each job
 void hold_display(Node *head){
     printf("--------------------------------------------------------\n");
     printf("Job ID    Run Time\n");
@@ -35,6 +37,7 @@ void hold_display(Node *head){
     printf("\n");
 }
 
+// Printing job ID, run time, and acquired time for each job
 void ready_display(Node *head){
     printf("--------------------------------------------------------\n");
     printf("Job ID    Run Time    Time Accrued\n");
@@ -51,6 +54,7 @@ void ready_display(Node *head){
     printf("\n");
 }
 
+// Printing job ID, acquired time, and time left for each job
 void running_display(Node *head){
     printf("--------------------------------------------------------\n");
     printf("Job ID    Time Accrued    Time Left\n");

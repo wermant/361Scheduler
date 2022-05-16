@@ -3,6 +3,7 @@
 #include <string.h>
 #include "structures.h"
 
+// Job initialization
 Job * createJob(char str[]){
     Job *job = malloc(sizeof(Job));
     char *token=strtok(str," ");
@@ -24,10 +25,12 @@ Job * createJob(char str[]){
     return job;
 }
 
+// Deallocates memory for job
 void destroyJob(Job *job){
     free(job);
 }
 
+// Request initialization
 Request * createRequest(char str[]){
     Request *req = malloc(sizeof(Request));
     char *token=strtok(str," ");
@@ -39,10 +42,12 @@ Request * createRequest(char str[]){
     return req;
 }
 
+// Deallocates memory for request
 void destroyRequest(Request *req){
     free(req);
 }
 
+// Release initialization
 Release * createRelease(char str[]){
     Release *release = malloc(sizeof(Release));
     char *token=strtok(str," ");
@@ -54,10 +59,12 @@ Release * createRelease(char str[]){
     return release;
 }
 
+// Deallocates memory for release
 void destroyRelease(Release *rel){
     free(rel);
 }
 
+// Deallocates memory for node
 void destroyNode(Node *node){
     free(node);
 }

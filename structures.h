@@ -1,3 +1,4 @@
+// File Declarations used in structures
 typedef struct Job{
     int arrival;
     int job_num;

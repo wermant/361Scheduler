@@ -1,4 +1,4 @@
-// File Declarations
+// File Declarations used in queues.c
 Node *init();
 void hq1_push(Node *,Job *,int, int);
 void hq2_push(Node *,Job *,int,int);
