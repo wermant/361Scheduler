@@ -15,7 +15,6 @@ int quantum;
 int run_count=0;
 int ready_queue_count = 0;
 int *time_arr;
-int if_req=0;
 
 Node *running_job;
 Node *headh1;
@@ -80,6 +79,7 @@ int grantRequest(int requested_devices, Node* running_job){
 }
 
 void main(int argc, char *argv[]){
+    //checks that user inputs what file to read
     assert(argc==2);
     running_job=NULL;
     headh1=init();
@@ -98,6 +98,7 @@ void main(int argc, char *argv[]){
     for (int i=0;i<100;i++){
         time_arr[i]=0;
     }
+    //sets an array of times to let the program know if there is an external event or not
     while (read=getline(&line,&len,fp)!=-1){
         int time=atoi(line+2);
         if (time!=9999){
@@ -114,8 +115,11 @@ void main(int argc, char *argv[]){
     fp=fopen(argv[1],"r");
     line=NULL;
     len=0;
+    //reads through the file and performs internal and external events when necessary
     while (time_arr[index]!=-1){
+        //Completes internal events when there is no external event at the time
         if (time_arr[index]==0){
+            //checks if it is time to switch the running job
             if (running_job!=NULL){
                 if (running_job->job->acquired_time==running_job->job->run_time){
                     running_job=NULL;
@@ -157,6 +161,7 @@ void main(int argc, char *argv[]){
             if (headready->job!=NULL && running_job==NULL){
                 running_job = headready;
             }
+            //update times of all queues and running job
             updateTime(headh1,headh2,headwait,headready->next);
             if (running_job!=NULL){
                 running_job->job->acquired_time++;
@@ -169,6 +174,7 @@ void main(int argc, char *argv[]){
                 run_count=1;
             }
         }
+        //if all external events have completed
         else if(time_arr[index]==9999){
             while (running_job!=NULL){
                 if (running_job->job->acquired_time==running_job->job->run_time){
@@ -221,6 +227,7 @@ void main(int argc, char *argv[]){
                     run_count=1;
                 }
             }
+            //Prints display after all jobs finish
             printf("At time 9999\n");
             printf("Current Available Main Memory: %d\n",remaining_memory);
             printf("Current Devices: %d\n",remaining_devices);
@@ -239,6 +246,7 @@ void main(int argc, char *argv[]){
             getline(&line,&len,fp);
             char *temp=line;
             token=strtok(temp," ");
+            //creates system config
             if (strcmp(token,"C")==0){
                 token=strtok(NULL," ");
                 start_time=atoi(token);
@@ -251,6 +259,7 @@ void main(int argc, char *argv[]){
                 token=strtok(NULL, " ");
                 quantum=atoi(token+2);
             }
+            //Creates new jobs
             else if (strcmp(token,"A")==0){
                 Job *new_job=createJob(line+2);
                 if (new_job->priority==1){
@@ -260,6 +269,7 @@ void main(int argc, char *argv[]){
                     hq2_push(headh2,new_job,main_memory,devices);
                 }
             }
+            //Creates a Request and handles it based on bankers
             else if (strcmp(token,"Q")==0){
                 Request *req = createRequest(line+2);
                 //Banker's algorithm to decide whether to grant request
@@ -275,6 +285,7 @@ void main(int argc, char *argv[]){
                 }
                 
             }
+            //Creates and handles release of devices
             else if (strcmp(token,"L")==0){
                 Release *rel = createRelease(line+2);
                 if (rel->job_num==running_job->job->job_num){
